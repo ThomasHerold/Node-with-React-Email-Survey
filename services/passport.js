@@ -13,6 +13,15 @@ passport.use(
       callbackURL: '/auth/google/callback' // user is redirected here after user grants permission for app to send request to google for their info
       }, 
       (accessToken, refreshToken, profile, done) => { 
-          new User({ googleId: profile.id }).save(); // takes profile id record and saves to the DB
+        User.findOne({ googleId: profile.id })
+            .then((existingUser) => {
+                if(existingUser)  {
+                    done(null, existingUser);
+                 } else {
+                    new User({ googleId: profile.id })
+                        .save()     // takes profile id record and saves to the db
+                        .then((user) => done(null, user)); 
+                 }     
+            });
       })
   ); 
