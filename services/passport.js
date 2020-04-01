@@ -25,7 +25,8 @@ passport.use(
     new GoogleStrategy({ // internally defines strategy string called 'google'
       clientID: keys.googleClientID,
       clientSecret: keys.googleClientSecret,
-      callbackURL: '/auth/google/callback' // user is redirected here after user grants permission for app to send request to google for their info
+      callbackURL: '/auth/google/callback', // user is redirected here after user grants permission for app to send request to google for their info
+      proxy: true
       }, 
       (accessToken, refreshToken, profile, done) => { 
         User.findOne({ googleId: profile.id }) // mongoose query to find if user info we are getting already exists in database; returns a Promise 
@@ -47,6 +48,7 @@ passport.use(
           clientID: keys.facebookClientID,
           clientSecret: keys.facebookClientSecret,
           callbackURL: '/auth/facebook/callback',
+          proxy: true
       },
       (accessToken, refreshToken, profile, done) => {  
           User.findOne({ facebookId: profile.id })
