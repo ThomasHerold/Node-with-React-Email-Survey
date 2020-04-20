@@ -28,19 +28,18 @@ passport.use(
       callbackURL: '/auth/google/callback', // user is redirected here after user grants permission for app to send request to google for their info
       proxy: true
       }, 
-      (accessToken, refreshToken, profile, done) => { 
-        User.findOne({ googleId: profile.id }) // mongoose query to find if user info we are getting already exists in database; returns a Promise 
-            .then((existingUser) => {
-                if(existingUser)  {
-                    done(null, existingUser); // second param is "proof" that we have a user when we say we are done
-                 } else { // if no uiser found, create a new one and save it
-                    new User({ googleId: profile.id }) 
-                        .save()     // takes profile id record and saves to the db; save returns a promise so we can call 'done'
-                        .then((user) => done(null, user)); 
-                 }     
-            });
-      })
-  );
+      async (accessToken, refreshToken, profile, done) => { 
+      const existingUser = await User.findOne({ googleId: profile.id }) // mongoose query to find if user info we are getting already exists in database; returns a Promise 
+             
+       if(existingUser)  {
+        return done(null, existingUser); // second param is "proof" that we have a user when we say we are done
+        } // if no user found, create a new one and save it
+
+         const user = await new User({ googleId: profile.id }).save()     // takes profile id record and saves to the db; save returns a promise so we can call 'done'
+         done(null, user); 
+
+     }     
+ ));
 
 // Facebook authentication strategy
 passport.use(
@@ -50,16 +49,14 @@ passport.use(
           callbackURL: '/auth/facebook/callback',
           proxy: true
       },
-      (accessToken, refreshToken, profile, done) => {  
-          User.findOne({ facebookId: profile.id })
-            .then((existingUser) => {
-                if(existingUser) {
-                    done(null, existingUser);
-                } else {
-                    new User({ facebookId: profile.id })
-                        .save()
-                        .then((user) => done(null, user));
-                }
-            });
-    })
-);
+      async (accessToken, refreshToken, profile, done) => {  
+      const existingUser = await User.findOne({ facebookId: profile.id })
+        
+        if(existingUser) {
+         return done(null, existingUser);
+        } 
+
+        const user = await new User({ facebookId: profile.id }).save()
+        done(null, user);
+     }
+));

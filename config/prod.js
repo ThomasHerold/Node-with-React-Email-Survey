@@ -5,5 +5,7 @@ module.exports = {
     facebookClientID: process.env.FACEBOOK_CLIENT_ID,
     facebookClientSecret: process.env.FACEBOOK_CLIENT_SECRET,
     mongoURI: process.env.MONGO_URI,
-    cookieKey: process.env.COOKIE_KEY
+    cookieKey: process.env.COOKIE_KEY,
+    stripePublic: process.env.STRIPE_PUBLIC,
+    stripeSecret: process.env.STRIPE_SECRET
 }; // requires these properties to be used in another file
