@@ -5,6 +5,7 @@ const passport = require('passport');
 const bodyParser = require('body-parser');
 const keys = require('./config/keys');
 require('./models/User'); // This order matters! Need to load the user model before loading the passport service
+require('./models/Survey');
 require('./services/passport'); // don't need to set equal to a variable because the passport file is not returning anything, we only need it to execute at least once
 
 mongoose.connect(keys.mongoURI);
@@ -23,8 +24,10 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Routes
 require('./routes/authRoutes')(app); // require statement returns a function, and then we immediately invoking it with the app variable
 require('./routes/billingRoutes')(app);
+require('./routes/surveyRoutes')(app);
 
 if (process.env.NODE_ENV === 'production') {
     // Express will serve up production assets like our main.js, css file
